@@ -6,6 +6,14 @@ import type { NextRequest } from 'next/server';
 const publicRoutes = ['/api/img/', '/api/files/'];
 
 export function middleware(request: NextRequest) {
+  // Always block /api/files/ routes regardless of auth settings
+  if (request.nextUrl.pathname.startsWith('/api/files/')) {
+    return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   // check env var for AI_TOOLKIT_AUTH, if not set, approve all requests
   // if it is set make sure bearer token matches
   const tokenToUse = process.env.AI_TOOLKIT_AUTH || null;
