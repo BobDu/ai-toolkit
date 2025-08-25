@@ -69,7 +69,7 @@ export default function SimpleJob({
     }
     let newQuantizationOptions = [
       {
-        label: 'Standard',
+        label: 'Standard | 标准',
         options: [quantizationOptions[0], quantizationOptions[1]],
       },
     ];
@@ -83,7 +83,7 @@ export default function SimpleJob({
     }
     if (ARAs.length > 0) {
       newQuantizationOptions.push({
-        label: 'Accuracy Recovery Adapters',
+        label: 'Accuracy Recovery Adapters | 精度恢复适配器',
         options: ARAs,
       });
     }
@@ -96,7 +96,7 @@ export default function SimpleJob({
     }
     if (additionalQuantizationOptions.length > 0) {
       newQuantizationOptions.push({
-        label: 'Additional Quantization Options',
+        label: 'Additional Quantization Options | 其他量化选项',
         options: additionalQuantizationOptions,
       });
     }
@@ -107,25 +107,25 @@ export default function SimpleJob({
     <>
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className={topBarClass}>
-          <Card title="Job">
+          <Card title="Job | 任务">
             <TextInput
-              label="Training Name"
+              label="Training Name | 训练名称"
               value={jobConfig.config.name}
               docKey="config.name"
               onChange={value => setJobConfig(value, 'config.name')}
-              placeholder="Enter training name"
+              placeholder="Enter training name | 输入训练名称"
               disabled={runId !== null}
               required
             />
             <SelectInput
-              label="GPU ID"
+              label="GPU ID | GPU编号"
               value={`${gpuIDs}`}
               docKey="gpuids"
               onChange={value => setGpuIDs(value)}
               options={gpuList.map((gpu: any) => ({ value: `${gpu.index}`, label: `GPU #${gpu.index}` }))}
             />
             <TextInput
-              label="Trigger Word"
+              label="Trigger Word | 触发词"
               value={jobConfig.config.process[0].trigger_word || ''}
               docKey="config.process[0].trigger_word"
               onChange={(value: string | null) => {
@@ -140,9 +140,9 @@ export default function SimpleJob({
           </Card>
 
           {/* Model Configuration Section */}
-          <Card title="Model">
+          <Card title="Model | 模型">
             <SelectInput
-              label="Model Architecture"
+              label="Model Architecture | 模型结构"
               value={jobConfig.config.process[0].model.arch}
               onChange={value => {
                 const currentArch = modelArchs.find(a => a.name === jobConfig.config.process[0].model.arch);
@@ -201,7 +201,7 @@ export default function SimpleJob({
               options={groupedModelOptions}
             />
             <TextInput
-              label="Name or Path"
+              label="Name or Path | 名称或路径"
               value={jobConfig.config.process[0].model.name_or_path}
               docKey="config.process[0].model.name_or_path"
               onChange={(value: string | null) => {
@@ -214,9 +214,9 @@ export default function SimpleJob({
               required
             />
             {modelArch?.additionalSections?.includes('model.low_vram') && (
-              <FormGroup label="Options">
+              <FormGroup label="Options | 选项">
                 <Checkbox
-                  label="Low VRAM"
+                  label="Low VRAM | 低显存"
                   checked={jobConfig.config.process[0].model.low_vram}
                   onChange={value => setJobConfig(value, 'config.process[0].model.low_vram')}
                 />
@@ -224,9 +224,9 @@ export default function SimpleJob({
             )}
           </Card>
           {modelArch?.disableSections?.includes('model.quantize') ? null : (
-            <Card title="Quantization">
+            <Card title="Quantization | 量化">
               <SelectInput
-                label="Transformer"
+                label="Transformer | 纯思法模"
                 value={jobConfig.config.process[0].model.quantize ? jobConfig.config.process[0].model.qtype : ''}
                 onChange={value => {
                   if (value === '') {
@@ -240,7 +240,7 @@ export default function SimpleJob({
                 options={transformerQuantizationOptions}
               />
               <SelectInput
-                label="Text Encoder"
+                label="Text Encoder | 文本编码器"
                 value={jobConfig.config.process[0].model.quantize_te ? jobConfig.config.process[0].model.qtype_te : ''}
                 onChange={value => {
                   if (value === '') {
@@ -256,21 +256,21 @@ export default function SimpleJob({
             </Card>
           )}
           {modelArch?.additionalSections?.includes('model.multistage') && (
-            <Card title="Multistage">
-              <FormGroup label="Stages to Train" docKey={'model.multistage'}>
+            <Card title="Multistage | 多阶段">
+              <FormGroup label="Stages to Train | 训练阶段" docKey={'model.multistage'}>
                 <Checkbox
-                  label="High Noise"
+                  label="High Noise | 高噪声"
                   checked={jobConfig.config.process[0].model.model_kwargs?.train_high_noise || false}
                   onChange={value => setJobConfig(value, 'config.process[0].model.model_kwargs.train_high_noise')}
                 />
                 <Checkbox
-                  label="Low Noise"
+                  label="Low Noise | 低噪声"
                   checked={jobConfig.config.process[0].model.model_kwargs?.train_low_noise || false}
                   onChange={value => setJobConfig(value, 'config.process[0].model.model_kwargs.train_low_noise')}
                 />
               </FormGroup>
               <NumberInput
-                  label="Switch Every"
+                  label="Switch Every | 切换间隔"
                   value={jobConfig.config.process[0].train.switch_boundary_every}
                   onChange={value => setJobConfig(value, 'config.process[0].train.switch_boundary_every')}
                   placeholder="eg. 1"
@@ -282,21 +282,21 @@ export default function SimpleJob({
           )}
           <Card title="Target">
             <SelectInput
-              label="Target Type"
+              label="Target Type | 目标类型"
               value={jobConfig.config.process[0].network?.type ?? 'lora'}
               onChange={value => setJobConfig(value, 'config.process[0].network.type')}
               options={[
-                { value: 'lora', label: 'LoRA' },
-                { value: 'lokr', label: 'LoKr' },
+                { value: 'lora', label: 'LoRA | 洛拉' },
+                { value: 'lokr', label: 'LoKr | 洛克尔' },
               ]}
             />
             {jobConfig.config.process[0].network?.type == 'lokr' && (
               <SelectInput
-                label="LoKr Factor"
+                label="LoKr Factor | 洛克尔因子"
                 value={`${jobConfig.config.process[0].network?.lokr_factor ?? -1}`}
                 onChange={value => setJobConfig(parseInt(value), 'config.process[0].network.lokr_factor')}
                 options={[
-                  { value: '-1', label: 'Auto' },
+                  { value: '-1', label: 'Auto | 自动' },
                   { value: '4', label: '4' },
                   { value: '8', label: '8' },
                   { value: '16', label: '16' },
@@ -307,7 +307,7 @@ export default function SimpleJob({
             {jobConfig.config.process[0].network?.type == 'lora' && (
               <>
                 <NumberInput
-                  label="Linear Rank"
+                  label="Linear Rank | 线性秩"
                   value={jobConfig.config.process[0].network.linear}
                   onChange={value => {
                     console.log('onChange', value);
@@ -321,7 +321,7 @@ export default function SimpleJob({
                 />
                 {modelArch?.disableSections?.includes('network.conv') ? null : (
                   <NumberInput
-                    label="Conv Rank"
+                    label="Conv Rank | 卷积秩"
                     value={jobConfig.config.process[0].network.conv}
                     onChange={value => {
                       console.log('onChange', value);
@@ -336,19 +336,19 @@ export default function SimpleJob({
               </>
             )}
           </Card>
-          <Card title="Save">
+          <Card title="Save | 保存">
             <SelectInput
-              label="Data Type"
+              label="Data Type | 数据类型"
               value={jobConfig.config.process[0].save.dtype}
               onChange={value => setJobConfig(value, 'config.process[0].save.dtype')}
               options={[
-                { value: 'bf16', label: 'BF16' },
-                { value: 'fp16', label: 'FP16' },
-                { value: 'fp32', label: 'FP32' },
+                { value: 'bf16', label: 'BF16 | 16位脑浮点' },
+                { value: 'fp16', label: 'FP16 | 16位浮点' },
+                { value: 'fp32', label: 'FP32 | 32位浮点' },
               ]}
             />
             <NumberInput
-              label="Save Every"
+              label="Save Every | 保存间隔"
               value={jobConfig.config.process[0].save.save_every}
               onChange={value => setJobConfig(value, 'config.process[0].save.save_every')}
               placeholder="eg. 250"
@@ -356,7 +356,7 @@ export default function SimpleJob({
               required
             />
             <NumberInput
-              label="Max Step Saves to Keep"
+              label="Max Step Saves to Keep | 最大保留步数"
               value={jobConfig.config.process[0].save.max_step_saves_to_keep}
               onChange={value => setJobConfig(value, 'config.process[0].save.max_step_saves_to_keep')}
               placeholder="eg. 4"
@@ -366,11 +366,11 @@ export default function SimpleJob({
           </Card>
         </div>
         <div>
-          <Card title="Training">
+          <Card title="Training | 训练">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
               <div>
                 <NumberInput
-                  label="Batch Size"
+                  label="Batch Size | 批次大小"
                   value={jobConfig.config.process[0].train.batch_size}
                   onChange={value => setJobConfig(value, 'config.process[0].train.batch_size')}
                   placeholder="eg. 4"
@@ -378,7 +378,7 @@ export default function SimpleJob({
                   required
                 />
                 <NumberInput
-                  label="Gradient Accumulation"
+                  label="Gradient Accumulation | 梯度累积"
                   className="pt-2"
                   value={jobConfig.config.process[0].train.gradient_accumulation}
                   onChange={value => setJobConfig(value, 'config.process[0].train.gradient_accumulation')}
@@ -387,7 +387,7 @@ export default function SimpleJob({
                   required
                 />
                 <NumberInput
-                  label="Steps"
+                  label="Steps | 训练步数"
                   className="pt-2"
                   value={jobConfig.config.process[0].train.steps}
                   onChange={value => setJobConfig(value, 'config.process[0].train.steps')}
@@ -398,16 +398,16 @@ export default function SimpleJob({
               </div>
               <div>
                 <SelectInput
-                  label="Optimizer"
+                  label="Optimizer | 优化器"
                   value={jobConfig.config.process[0].train.optimizer}
                   onChange={value => setJobConfig(value, 'config.process[0].train.optimizer')}
                   options={[
-                    { value: 'adamw8bit', label: 'AdamW8Bit' },
-                    { value: 'adafactor', label: 'Adafactor' },
+                    { value: 'adamw8bit', label: 'AdamW8Bit | 亚当W8比特' },
+                    { value: 'adafactor', label: 'Adafactor | 阿达因子' },
                   ]}
                 />
                 <NumberInput
-                  label="Learning Rate"
+                  label="Learning Rate | 学习率"
                   className="pt-2"
                   value={jobConfig.config.process[0].train.lr}
                   onChange={value => setJobConfig(value, 'config.process[0].train.lr')}
@@ -416,7 +416,7 @@ export default function SimpleJob({
                   required
                 />
                 <NumberInput
-                  label="Weight Decay"
+                  label="Weight Decay | 权重衰减"
                   className="pt-2"
                   value={jobConfig.config.process[0].train.optimizer_params.weight_decay}
                   onChange={value => setJobConfig(value, 'config.process[0].train.optimizer_params.weight_decay')}
@@ -428,44 +428,44 @@ export default function SimpleJob({
               <div>
                 {modelArch?.disableSections?.includes('train.timestep_type') ? null : (
                   <SelectInput
-                    label="Timestep Type"
+                    label="Timestep Type | 时间步类型"
                     value={jobConfig.config.process[0].train.timestep_type}
                     disabled={modelArch?.disableSections?.includes('train.timestep_type') || false}
                     onChange={value => setJobConfig(value, 'config.process[0].train.timestep_type')}
                     options={[
-                      { value: 'sigmoid', label: 'Sigmoid' },
-                      { value: 'linear', label: 'Linear' },
-                      { value: 'shift', label: 'Shift' },
-                      { value: 'weighted', label: 'Weighted' },
+                      { value: 'sigmoid', label: 'Sigmoid | S型函数' },
+                      { value: 'linear', label: 'Linear | 线性' },
+                      { value: 'shift', label: 'Shift | 偏移' },
+                      { value: 'weighted', label: 'Weighted | 加权' },
                     ]}
                   />
                 )}
                 <SelectInput
-                  label="Timestep Bias"
+                  label="Timestep Bias | 时间步偏差"
                   className="pt-2"
                   value={jobConfig.config.process[0].train.content_or_style}
                   onChange={value => setJobConfig(value, 'config.process[0].train.content_or_style')}
                   options={[
-                    { value: 'balanced', label: 'Balanced' },
-                    { value: 'content', label: 'High Noise' },
-                    { value: 'style', label: 'Low Noise' },
+                    { value: 'balanced', label: 'Balanced | 平衡' },
+                    { value: 'content', label: 'High Noise | 高噪声' },
+                    { value: 'style', label: 'Low Noise | 低噪声' },
                   ]}
                 />
                 <SelectInput
-                  label="Noise Scheduler"
+                  label="Noise Scheduler | 噪声调度器"
                   className="pt-2"
                   value={jobConfig.config.process[0].train.noise_scheduler}
                   onChange={value => setJobConfig(value, 'config.process[0].train.noise_scheduler')}
                   options={[
-                    { value: 'flowmatch', label: 'FlowMatch' },
-                    { value: 'ddpm', label: 'DDPM' },
+                    { value: 'flowmatch', label: 'FlowMatch | 流匹配' },
+                    { value: 'ddpm', label: 'DDPM | 去噪扩散概率模型' },
                   ]}
                 />
               </div>
               <div>
-                <FormGroup label="EMA (Exponential Moving Average)">
+                <FormGroup label="EMA (Exponential Moving Average) | 指数移动平均">
                   <Checkbox
-                    label="Use EMA"
+                    label="Use EMA | 使用EMA"
                     className="pt-1"
                     checked={jobConfig.config.process[0].train.ema_config?.use_ema || false}
                     onChange={value => setJobConfig(value, 'config.process[0].train.ema_config.use_ema')}
@@ -473,7 +473,7 @@ export default function SimpleJob({
                 </FormGroup>
                 {jobConfig.config.process[0].train.ema_config?.use_ema && (
                   <NumberInput
-                    label="EMA Decay"
+                    label="EMA Decay | EMA衰减"
                     className="pt-2"
                     value={jobConfig.config.process[0].train.ema_config?.ema_decay as number}
                     onChange={value => setJobConfig(value, 'config.process[0].train.ema_config?.ema_decay')}
@@ -482,9 +482,9 @@ export default function SimpleJob({
                   />
                 )}
 
-                <FormGroup label="Text Encoder Optimizations" className="pt-2">
+                <FormGroup label="Text Encoder Optimizations | 文本编码器优化" className="pt-2">
                   <Checkbox
-                    label="Unload TE"
+                    label="Unload TE | 卸载TE"
                     checked={jobConfig.config.process[0].train.unload_text_encoder || false}
                     docKey={'train.unload_text_encoder'}
                     onChange={value => {
@@ -495,7 +495,7 @@ export default function SimpleJob({
                     }}
                   />
                   <Checkbox
-                    label="Cache Text Embeddings"
+                    label="Cache Text Embeddings | 缓存文本嵌入"
                     checked={jobConfig.config.process[0].train.cache_text_embeddings || false}
                     docKey={'train.cache_text_embeddings'}
                     onChange={value => {
@@ -508,9 +508,9 @@ export default function SimpleJob({
                 </FormGroup>
               </div>
               <div>
-                <FormGroup label="Regularization">
+                <FormGroup label="Regularization | 正则化">
                   <Checkbox
-                    label="Differtial Output Preservation"
+                    label="Differtial Output Preservation | 差分输出保持"
                     className="pt-1"
                     checked={jobConfig.config.process[0].train.diff_output_preservation || false}
                     onChange={value => setJobConfig(value, 'config.process[0].train.diff_output_preservation')}
@@ -519,7 +519,7 @@ export default function SimpleJob({
                 {jobConfig.config.process[0].train.diff_output_preservation && (
                   <>
                     <NumberInput
-                      label="DOP Loss Multiplier"
+                      label="DOP Loss Multiplier | DOP损失乘数"
                       className="pt-2"
                       value={jobConfig.config.process[0].train.diff_output_preservation_multiplier as number}
                       onChange={value =>
@@ -529,11 +529,11 @@ export default function SimpleJob({
                       min={0}
                     />
                     <TextInput
-                      label="DOP Preservation Class"
+                      label="DOP Preservation Class | DOP保持类别"
                       className="pt-2"
                       value={jobConfig.config.process[0].train.diff_output_preservation_class as string}
                       onChange={value => setJobConfig(value, 'config.process[0].train.diff_output_preservation_class')}
-                      placeholder="eg. woman"
+                      placeholder="eg. woman | 例如：女性"
                     />
                   </>
                 )}
@@ -542,7 +542,7 @@ export default function SimpleJob({
           </Card>
         </div>
         <div>
-          <Card title="Datasets">
+          <Card title="Datasets | 数据集">
             <>
               {jobConfig.config.process[0].datasets.map((dataset, i) => (
                 <div key={i} className="p-4 rounded-lg bg-gray-800 relative">
@@ -558,18 +558,18 @@ export default function SimpleJob({
                   >
                     <X />
                   </button>
-                  <h2 className="text-lg font-bold mb-4">Dataset {i + 1}</h2>
+                  <h2 className="text-lg font-bold mb-4">Dataset {i + 1} | 数据集 {i + 1}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
                       <SelectInput
-                        label="Dataset"
+                        label="Dataset | 数据集"
                         value={dataset.folder_path}
                         onChange={value => setJobConfig(value, `config.process[0].datasets[${i}].folder_path`)}
                         options={datasetOptions}
                       />
                       {modelArch?.additionalSections?.includes('datasets.control_path') && (
                         <SelectInput
-                          label="Control Dataset"
+                          label="Control Dataset | 控制数据集"
                           docKey="datasets.control_path"
                           value={dataset.control_path ?? ''}
                           className="pt-2"
@@ -580,7 +580,7 @@ export default function SimpleJob({
                         />
                       )}
                       <NumberInput
-                        label="LoRA Weight"
+                        label="LoRA Weight | LoRA权重"
                         value={dataset.network_weight}
                         className="pt-2"
                         onChange={value => setJobConfig(value, `config.process[0].datasets[${i}].network_weight`)}
@@ -589,13 +589,13 @@ export default function SimpleJob({
                     </div>
                     <div>
                       <TextInput
-                        label="Default Caption"
+                        label="Default Caption | 默认标题"
                         value={dataset.default_caption}
                         onChange={value => setJobConfig(value, `config.process[0].datasets[${i}].default_caption`)}
-                        placeholder="eg. A photo of a cat"
+                        placeholder="eg. A photo of a cat | 例如：一张猫的照片"
                       />
                       <NumberInput
-                        label="Caption Dropout Rate"
+                        label="Caption Dropout Rate | 标题丢弃率"
                         className="pt-2"
                         value={dataset.caption_dropout_rate}
                         onChange={value => setJobConfig(value, `config.process[0].datasets[${i}].caption_dropout_rate`)}
@@ -605,7 +605,7 @@ export default function SimpleJob({
                       />
                       {modelArch?.additionalSections?.includes('datasets.num_frames') && (
                         <NumberInput
-                          label="Num Frames"
+                          label="Num Frames | 帧数"
                           className="pt-2"
                           docKey="datasets.num_frames"
                           value={dataset.num_frames}
@@ -617,43 +617,43 @@ export default function SimpleJob({
                       )}
                     </div>
                     <div>
-                      <FormGroup label="Settings" className="">
+                      <FormGroup label="Settings | 设置" className="">
                         <Checkbox
-                          label="Cache Latents"
+                          label="Cache Latents | 缓存潜在向量"
                           checked={dataset.cache_latents_to_disk || false}
                           onChange={value =>
                             setJobConfig(value, `config.process[0].datasets[${i}].cache_latents_to_disk`)
                           }
                         />
                         <Checkbox
-                          label="Is Regularization"
+                          label="Is Regularization | 是否正则化"
                           checked={dataset.is_reg || false}
                           onChange={value => setJobConfig(value, `config.process[0].datasets[${i}].is_reg`)}
                         />
                         {modelArch?.additionalSections?.includes('datasets.do_i2v') && (
                           <Checkbox
-                            label="Do I2V"
+                            label="Do I2V | 图转视频"
                             checked={dataset.do_i2v || false}
                             onChange={value => setJobConfig(value, `config.process[0].datasets[${i}].do_i2v`)}
                             docKey="datasets.do_i2v"
                           />
                         )}
                       </FormGroup>
-                      <FormGroup label="Flipping" docKey={'datasets.flip'} className="mt-2">
+                      <FormGroup label="Flipping | 翻转" docKey={'datasets.flip'} className="mt-2">
                         <Checkbox
-                          label={<>Flip X <FlipHorizontal2 className="inline-block w-4 h-4 ml-1" /></>}
+                          label={<>Flip X | 水平翻转 <FlipHorizontal2 className="inline-block w-4 h-4 ml-1" /></>}
                           checked={dataset.flip_x || false}
                           onChange={value => setJobConfig(value, `config.process[0].datasets[${i}].flip_x`)}
                         />
                         <Checkbox
-                          label={<>Flip Y <FlipVertical2 className="inline-block w-4 h-4 ml-1" /></>}
+                          label={<>Flip Y | 垂直翻转 <FlipVertical2 className="inline-block w-4 h-4 ml-1" /></>}
                           checked={dataset.flip_y || false}
                           onChange={value => setJobConfig(value, `config.process[0].datasets[${i}].flip_y`)}
                         />
                       </FormGroup>
                     </div>
                     <div>
-                      <FormGroup label="Resolutions" className="pt-2">
+                      <FormGroup label="Resolutions | 分辨率" className="pt-2">
                         <div className="grid grid-cols-2 gap-2">
                           {[
                             [256, 512, 768],
@@ -692,13 +692,13 @@ export default function SimpleJob({
                 }}
                 className="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
               >
-                Add Dataset
+                Add Dataset | 添加数据集
               </button>
             </>
           </Card>
         </div>
         <div>
-          <Card title="Sample">
+          <Card title="Sample | 采样">
             <div
               className={
                 isVideoModel
@@ -708,7 +708,7 @@ export default function SimpleJob({
             >
               <div>
                 <NumberInput
-                  label="Sample Every"
+                  label="Sample Every | 采样间隔"
                   value={jobConfig.config.process[0].sample.sample_every}
                   onChange={value => setJobConfig(value, 'config.process[0].sample.sample_every')}
                   placeholder="eg. 250"
@@ -716,17 +716,17 @@ export default function SimpleJob({
                   required
                 />
                 <SelectInput
-                  label="Sampler"
+                  label="Sampler | 采样器"
                   className="pt-2"
                   value={jobConfig.config.process[0].sample.sampler}
                   onChange={value => setJobConfig(value, 'config.process[0].sample.sampler')}
                   options={[
-                    { value: 'flowmatch', label: 'FlowMatch' },
-                    { value: 'ddpm', label: 'DDPM' },
+                    { value: 'flowmatch', label: 'FlowMatch | 流匹配' },
+                    { value: 'ddpm', label: 'DDPM | 去噪扩散概率模型' },
                   ]}
                 />
                 <NumberInput
-                  label="Guidance Scale"
+                  label="Guidance Scale | 引导强度"
                   value={jobConfig.config.process[0].sample.guidance_scale}
                   onChange={value => setJobConfig(value, 'config.process[0].sample.guidance_scale')}
                   placeholder="eg. 1.0"
@@ -735,7 +735,7 @@ export default function SimpleJob({
                   required
                 />
                 <NumberInput
-                  label="Sample Steps"
+                  label="Sample Steps | 采样步数"
                   value={jobConfig.config.process[0].sample.sample_steps}
                   onChange={value => setJobConfig(value, 'config.process[0].sample.sample_steps')}
                   placeholder="eg. 1"
@@ -746,7 +746,7 @@ export default function SimpleJob({
               </div>
               <div>
                 <NumberInput
-                  label="Width"
+                  label="Width | 宽度"
                   value={jobConfig.config.process[0].sample.width}
                   onChange={value => setJobConfig(value, 'config.process[0].sample.width')}
                   placeholder="eg. 1024"
@@ -754,7 +754,7 @@ export default function SimpleJob({
                   required
                 />
                 <NumberInput
-                  label="Height"
+                  label="Height | 高度"
                   value={jobConfig.config.process[0].sample.height}
                   onChange={value => setJobConfig(value, 'config.process[0].sample.height')}
                   placeholder="eg. 1024"
@@ -765,7 +765,7 @@ export default function SimpleJob({
                 {isVideoModel && (
                   <div>
                     <NumberInput
-                      label="Num Frames"
+                      label="Num Frames | 帧数"
                       value={jobConfig.config.process[0].sample.num_frames}
                       onChange={value => setJobConfig(value, 'config.process[0].sample.num_frames')}
                       placeholder="eg. 0"
@@ -774,7 +774,7 @@ export default function SimpleJob({
                       required
                     />
                     <NumberInput
-                      label="FPS"
+                      label="FPS | 帧率"
                       value={jobConfig.config.process[0].sample.fps}
                       onChange={value => setJobConfig(value, 'config.process[0].sample.fps')}
                       placeholder="eg. 0"
@@ -788,7 +788,7 @@ export default function SimpleJob({
 
               <div>
                 <NumberInput
-                  label="Seed"
+                  label="Seed | 随机种子"
                   value={jobConfig.config.process[0].sample.seed}
                   onChange={value => setJobConfig(value, 'config.process[0].sample.seed')}
                   placeholder="eg. 0"
@@ -796,17 +796,17 @@ export default function SimpleJob({
                   required
                 />
                 <Checkbox
-                  label="Walk Seed"
+                  label="Walk Seed | 种子游走"
                   className="pt-4 pl-2"
                   checked={jobConfig.config.process[0].sample.walk_seed}
                   onChange={value => setJobConfig(value, 'config.process[0].sample.walk_seed')}
                 />
               </div>
               <div>
-                <FormGroup label="Advanced Sampling" className="pt-2">
+                <FormGroup label="Advanced Sampling | 高级采样" className="pt-2">
                   <div>
                     <Checkbox
-                      label="Skip First Sample"
+                      label="Skip First Sample | 跳过首次采样"
                       className="pt-4"
                       checked={jobConfig.config.process[0].train.skip_first_sample || false}
                       onChange={value => setJobConfig(value, 'config.process[0].train.skip_first_sample')}
@@ -814,7 +814,7 @@ export default function SimpleJob({
                   </div>
                   <div>
                     <Checkbox
-                      label="Disable Sampling"
+                      label="Disable Sampling | 禁用采样"
                       className="pt-1"
                       checked={jobConfig.config.process[0].train.disable_sampling || false}
                       onChange={value => setJobConfig(value, 'config.process[0].train.disable_sampling')}
@@ -823,7 +823,7 @@ export default function SimpleJob({
                 </FormGroup>
               </div>
             </div>
-            <FormGroup label={`Sample Prompts (${jobConfig.config.process[0].sample.samples.length})`} className="pt-2">
+            <FormGroup label={`Sample Prompts | 采样提示词 (${jobConfig.config.process[0].sample.samples.length})`} className="pt-2">
               <div></div>
             </FormGroup>
             {jobConfig.config.process[0].sample.samples.map((sample, i) => (
@@ -833,10 +833,10 @@ export default function SimpleJob({
                     <div className="flex">
                       <div className="flex-1">
                         <TextInput
-                          label={`Prompt`}
+                          label={`Prompt | 提示词`}
                           value={sample.prompt}
                           onChange={value => setJobConfig(value, `config.process[0].sample.samples[${i}].prompt`)}
-                          placeholder="Enter prompt"
+                          placeholder="Enter prompt | 输入提示词"
                           required
                         />
                       </div>
@@ -861,7 +861,7 @@ export default function SimpleJob({
                           }}
                         >
                           {!sample.ctrl_img && (
-                            <div className="text-gray-400 text-xs text-center font-bold">Add Control Image</div>
+                            <div className="text-gray-400 text-xs text-center font-bold">Add Control Image | 添加控制图像</div>
                           )}
                         </div>
                       )}
@@ -895,13 +895,13 @@ export default function SimpleJob({
               }
               className="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
             >
-              Add Prompt
+              Add Prompt | 添加提示词
             </button>
           </Card>
         </div>
 
-        {status === 'success' && <p className="text-green-500 text-center">Training saved successfully!</p>}
-        {status === 'error' && <p className="text-red-500 text-center">Error saving training. Please try again.</p>}
+        {status === 'success' && <p className="text-green-500 text-center">Training saved successfully! | 训练保存成功！</p>}
+        {status === 'error' && <p className="text-red-500 text-center">Error saving training. Please try again. | 保存训练失败，请重试。</p>}
       </form>
       <AddSingleImageModal />
     </>
